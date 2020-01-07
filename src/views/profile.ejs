@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>
+        <%=title%>
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/upload.css">
+    <!--  <script src="https://unpkg.com/ipfs-api/dist/index.min.js"></script>
+    <script src="https://npmcdn.com/ipfs-api/dist/index.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="shortcut icon" href="img/SARA.png">
+    
+</head>
+
+<body style="background: white;">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-info">
+        <a class="navbar-brand" href="/">
+            <%=title%>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item" data-toggle="modal" data-target="#buyToken">
+                    <a class="nav-link" href="#">Buy SATs
+                        </a>
+                </li>
+                <li class="nav-item" data-toggle="modal" data-target="#sellToken">
+                    <a class="nav-link" href="#">Sell SATs
+                        </a>
+                </li>
+                <li class="nav-item" data-toggle="modal" data-target="#applyForReviewer">
+                    <a class="nav-link" href="#">Become a Reviewer
+                        </a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <a class="btn btn-success my-2 my-sm-0" id="btn-signin" href="/logout">Logout</a>
+            </form>
+
+        </div>
+    </nav>
+    <div class="row">
+
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+            <div class="card">
+                <img class="card-img-top" style="height:60%;" src="/img/Avatar.png" alt="Card image cap">
+                <div class="card-body">
+                    <center>
+                        <h3 class="card-title"><strong><%=user.uname%></strong></h3>
+                    </center>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Name :
+                        <%=user.fname%>&nbsp;
+                            <%=user.lname%>
+                    </li>
+                    <li class="list-group-item">Email Id :
+                        <%=user.email%>
+                    </li>
+                    <!-- <li class="list-group-item">Public Key : <%=user.address%></li>  -->
+                    <li class="list-group-item">Account Balance :
+                        <span id="balance"> <%=balance%></span> SAT
+                    </li>
+                </ul>
+
+            </div>
+            <!-- <center>
+                <div class="avatar">
+                    <img src="">
+                </div>
+                <div class="username">
+                    <h4><strong><i><%=user.fname%></i></strong></h4>
+                </div>
+               
+            </center> -->
+        </div>
+
+        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+            <br>
+            <center>
+                <h3>My Submissions</h3>
+            </center>
+            <br>
+            <% if(sub.length == 0){%>
+                <center>
+                    <h6>You do not have any submissions</h6>
+                </center>
+                <%}else{%>
+                    <table class="table-fill">
+                        <thead>
+                            <tr>
+                                <th class="text-left" style="width:60%;">Hash Value</th>
+                                <th class="text-left" style="width:20%;">Timestamp</th>
+                                <th class="text-left">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-hover">
+                            <%for(var i=0;i<sub.length;i++){%>
+                                <tr>
+                                    <td class="text-left">
+                                        <a target="_blank" href="http://localhost:8080/ipfs/<%=sub[i].h%>">
+                                            <%=sub[i].h%>
+                                        </a>
+                                    </td>
+                                    <td class="text-left" id="accuracy">
+                                        <%=details[i].timestamp%>
+                                    </td>
+
+                                    <%if(sub[i].status=="Accepted" || sub[i].status=="Rejected"){%>
+                                        <td class="text-left" id="accuracy">
+                                            <%if(sub[i].status=="Accepted"){%>
+                                                <a class="btn btn-sm btn-success" data-toggle="modal" data-target="#contents<%=i%>" id="yes" style="color:white;">
+                                                    <%=sub[i].status%>
+                                                </a>
+                                                <%}else{%>
+                                                    <a class="btn btn-sm btn-danger" data-toggle="modal" data-target="#contents<%=i%>" id="yes" style="color:white;">
+                                                        <%=sub[i].status%>
+                                                    </a>
+                                                    <%}%>
+                                        </td>
+
+
+                                        <div class="modal fade" id="contents<%=i%>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Status : <span><strong><%=sub[i].status%></strong></span></h5>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <%for(var j=0;j<sub[i].reviews.length;j++){%>
+                                                            <ul style="list-style-type: none">
+                                                                <li><strong>Reviewer Address : </strong><span><%=sub[i].reviews[j].Reviewerid%></span></li>
+                                                                <li><strong>Marks : </strong><span><%=sub[i].reviews[j].Marks%></span></li>
+                                                                <%if(sub[i].reviews[j].Marks > 5) {%>
+                                                                    <li><strong>Comments : </strong><span style="color:green;"><%=sub[i].reviews[j].Comments%></span></li>
+                                                                    <%}else{%>
+                                                                        <li><strong>Comments : </strong><span style="color:red;"><%=sub[i].reviews[j].Comments%></span></li>
+                                                                        <%}%>
+                                                            </ul>
+                                                            <hr>
+                                                            <%}%>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <%}else{%>
+                                            <td class="text-left" id="accuracy"><span>Pending...</span></td>
+                                            <%}%>
+
+                                </tr>
+                                <%}%>
+
+                        </tbody>
+                    </table>
+                    <%}%>
+
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                var balance = parseInt($('#balance').html());
+                if (balance < 50) {
+                    $('button').prop('disabled', true);
+                    swal("Low Balance!", "Please buy tokens", "error");
+                }
+
+            });
+        </script>
+
+
+        <div id="upload-doc">
+            <span>Upload</span>
+            <button type="button" id="upload-button" data-toggle="modal" data-target="#exampleModal">
+            <h2>+</h2>
+        </button>
+        </div>
+
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Upload New Document</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form" action="/upload" method="POST" enctype="multipart/form-data">
+                            <div class="file-upload-wrapper" data-text="Select your file!">
+                                <input name="file" id="file" type="file" class="file-upload-field" required>
+                            </div>
+
+                            <select name="domain" required="Please Select One">
+                                <option val="Machine Learning">Machine Learning</option>
+                                <option val="Blockchain">BlockChain</option>
+                                <option val="Cloud Computing">Cloud Computing</option>
+                                <option val="Artificial Intelligence">Artificial Intelligence</option>
+                                <option val="Cyber Security">Cyber Security</option>
+                                <option val="Computer Networks">Computer Networks</option>
+                                <option val="Digital Signal Processing">Digital Signal Processing</option>
+                            </select>
+                            <br><br>
+                            <input class="btn btn-danger btn-lg" id="btn-upload" type="submit" value="Confirm" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="buyToken" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Buy SATs</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form" action="/">
+                            <label>Buy Tokens: </label>
+                            <input id="buyT" name="buyT" type="number" max=100 min=1>
+                            <input class="btn btn-info btn-lg" id="btn-buy" type="button" value="Confirm" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="sellToken" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Sell SATs</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form" action="/">
+                            <label>Sell Tokens: </label>
+                            <input id="sellT" name="sellT" type="number" min=1>
+                            <input class="btn btn-info btn-lg" id="btn-sell" type="button" value="Confirm" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="applyForReviewer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Upload Resume/CV/Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form" action="/becomeReviewer" method="POST" enctype="multipart/form-data">
+                            <div class="form-row">
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="First name" name="fname">
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="Last name" name="lname">
+                                </div>
+                            </div>
+                            <br>
+
+                            <div class="file-upload-wrapper" data-text="Select your file!">
+                                <input name="file" id="file" type="file" class="file-upload-field" required>
+                            </div>
+
+                            <select name="domain" required="Please Select One">
+                                <option val="Machine Learning">Machine Learning</option>
+                                <option val="Blockchain">BlockChain</option>
+                                <option val="Cloud Computing">Cloud Computing</option>
+                                <option val="Artificial Intelligence">Artificial Intelligence</option>
+                                <option val="Cyber Security">Cyber Security</option>
+                                <option val="Computer Networks">Computer Networks</option>
+                                <option val="Digital Signal Processing">Digital Signal Processing</option>
+                            </select>
+
+
+                            <br><br>
+                            <input class="btn btn-danger btn-lg" id="btn-upload" type="submit" value="Confirm" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+        <script type="text/javascript" src="js/navbar.js"></script>
+        <script type="text/javascript" src="js/upload.js"></script>
+
+        <script type="text/javascript">
+            $("form").on("change", ".file-upload-field", function() {
+                $(this).parent(".file-upload-wrapper").attr("data-text", $(this).val().replace(/.*(\/|\\)/, ''));
+            });
+        </script>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+
+                // e.preventDefault();
+                $('btn-upload').click(function() {
+                    swal({
+                        title: "Success",
+                        text: "File Uploaded Successfully",
+                        icon: "success"
+                    }).then(function() {
+                        window.location.reload();
+                    });
+                });
+                $('#btn-sell').click(function() {
+                    var x = $('#sellT').val();
+                    var bal = parseInt($('#balance').text());
+                    if (x > bal) {
+                        swal("Cancelled", "You cannot sell amount higher than balance", "error");
+                    } else {
+                        swal({
+                            title: "Are you sure?",
+                            text: "You will not be taken aback!",
+                            icon: "warning",
+                            buttons: [
+                                'No, cancel it!',
+                                'Yes, I am sure!'
+                            ],
+                            dangerMode: true,
+                        }).then(function(isConfirm) {
+                            if (isConfirm) {
+                                swal({
+                                    title: 'Confirmation',
+                                    text: 'Tokens are successfully debited! wait till we redirect you...Do not press anything!',
+                                    icon: 'success'
+                                }).then(function() {
+                                    $.post('/sellTokens', {
+                                        data: x
+                                    }, function(response) {
+                                        window.location.reload();
+                                    });
+                                });
+                            } else {
+                                swal("Cancelled", "You can come back again:)", "error");
+                            }
+                        });
+                    }
+                });
+
+                $('#btn-buy').click(function() {
+                    var x = $('#buyT').val();
+
+                    swal({
+                        title: "Are you sure?",
+                        text: "You will not be taken aback!",
+                        icon: "warning",
+                        buttons: [
+                            'No, cancel it!',
+                            'Yes, I am sure!'
+                        ],
+                        dangerMode: true,
+                    }).then(function(isConfirm) {
+                        if (isConfirm) {
+                            swal({
+                                title: 'Confirmation',
+                                text: 'Tokens are successfully credited! wait till we redirect you...Do not press anything!',
+                                icon: 'success'
+                            }).then(function() {
+                                $.post('/buyTokens', {
+                                    data: x
+                                }, function(response) {
+                                    window.location.reload();
+                                });
+                            });
+                        } else {
+                            swal("Cancelled", "You can come back again:)", "error");
+                        }
+                    });
+                });
+            });
+        </script>
+</body>
+
+</html>
